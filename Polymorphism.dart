@@ -7,6 +7,14 @@
 // interface is an abstract class that contains only abstract methods
 // interface is a contract that a class must follow (derived class must implement all abstract methods of the interface)
 
+// data encapsulation: using getter and setter to access private variables
+// private variable: a variable that cannot be accessed outside the class (prefix with _)
+// getter: a method that returns the value of a private variable
+// setter: a method that sets the value of a private variable
+
+// polymorphism: the ability of a variable, function or object to take on multiple forms
+// polymorphism is achieved through inheritance and interfaces
+
 abstract class Vehicle {
   void start(); // abstract method
   void move_forward(); // abstract method
