@@ -15,6 +15,19 @@
 // polymorphism: the ability of a variable, function or object to take on multiple forms
 // polymorphism is achieved through inheritance and interfaces
 
+// operator overloading: the ability to define custom behavior for operators (e.g. +, -, *, /) for user-defined types (classes)
+/*
+Object
+  Object operator +(Object other) {
+    // custom behavior for + operator
+  }
+
+String
+  String operator +(String other) {
+    // custom behavior for + operator
+  }
+*/
+
 abstract class Vehicle {
   void start(); // abstract method
   void move_forward(); // abstract method
@@ -48,6 +61,10 @@ class Car extends Vehicle {
 // Car c = Car(); // ok
 
 class Train extends Vehicle {
+  Train operator +(Car other) { // operator overloading
+    return Train();
+  }
+
   @override
   void start() {
     print("Train started");
@@ -117,6 +134,7 @@ void main() {
   myTrain.move_forward();
   myTrain.stop(); // calls overridden stop() method of Train class
   myTrain.speed();
+  myTrain + myCar; // calls overloaded + operator of Train class
 
   Bike myBike = Bike();
   myBike.start();
