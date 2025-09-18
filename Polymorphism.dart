@@ -1,8 +1,11 @@
-//abstract class
+// abstract class
 // abstract class is a class that cannot be instantiated (you cannot create an object of an abstract class)
 // abstract class is a blueprint for other classes
 // abstract class can have abstract methods (methods without body)
 // abstract class can have non-abstract methods (methods with body)
+
+// interface is an abstract class that contains only abstract methods
+// interface is a contract that a class must follow (derived class must implement all abstract methods of the interface)
 
 abstract class Vehicle {
   void start(); // abstract method
@@ -10,6 +13,7 @@ abstract class Vehicle {
   void stop() { // non-abstract method
     print("Vehicle stopped");
   }
+  void speed(); // abstract method
 }
 
 // you cannot create an instance of an abstract class (no object of an abstract class)
@@ -25,7 +29,13 @@ class Car extends Vehicle {
   void move_forward() {
     print("Car moving forward");
   }
-} 
+
+  @override
+  void speed() {
+    print("Car speed is 60 mph");
+  }
+}
+
 // you can create an instance of a derived class (object of a derived class)
 // Car c = Car(); // ok
 
@@ -44,6 +54,42 @@ class Train extends Vehicle {
   void stop() { // overriding non-abstract method
     print("Train stopped");
   }
+
+  @override
+  void speed() {
+    print("Train speed is 80 mph");
+  }
+}
+
+// implementing an interface (need to implement all abstract methods of the interface)
+class Bike implements Vehicle { // implements keyword is used to implement an interface
+  int bikeSpeed = 0;
+  @override
+  void start() {
+    print("Bike started");
+  }
+
+  @override
+  void move_forward() {
+    print("pedal faster");
+  }
+
+  @override
+  void stop() {
+    print("Bike stopped");
+  }
+
+  @override
+  void speed() {
+    print("Bike speed is $bikeSpeed");
+  }
+
+  int get getSpeed { // getter
+    return bikeSpeed;
+  }
+  set setSpeed(int value) { // setter
+    this.bikeSpeed = value;
+  }
 }
 
 void main() {
@@ -55,8 +101,16 @@ void main() {
   racer.move_forward(); // racer still can call move_forward() method of Car class
   myCar.stop();
   racer.stop(); // racer can call stop() method of Vehicle class
+
   Train myTrain = Train();
   myTrain.start();
   myTrain.move_forward();
   myTrain.stop(); // calls overridden stop() method of Train class
+
+  Bike myBike = Bike();
+  myBike.start();
+  myBike.setSpeed = 20; // setting bike speed using setter
+  myBike.speed(); // getting bike speed using getter
+  myBike.move_forward();
+  myBike.stop();
 }
