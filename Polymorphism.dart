@@ -89,7 +89,7 @@ class Bike implements Vehicle { // implements keyword is used to implement an in
 
   @override
   void speed() {
-    print("Bike speed is $bikeSpeed");
+    print("Bike speed is $bikeSpeed mph");
   }
 
   int get getSpeed { // getter
@@ -109,15 +109,18 @@ void main() {
   racer.move_forward(); // racer still can call move_forward() method of Car class
   myCar.stop();
   racer.stop(); // racer can call stop() method of Vehicle class
+  myCar.speed();
+  racer.speed(); // racer still can call speed() method of Car class
 
   Train myTrain = Train();
   myTrain.start();
   myTrain.move_forward();
   myTrain.stop(); // calls overridden stop() method of Train class
+  myTrain.speed();
 
   Bike myBike = Bike();
   myBike.start();
-  myBike.setSpeed = 20; // setting bike speed using setter
+  myBike.setSpeed = 10; // setting bike speed using setter
   myBike.speed(); // getting bike speed using getter
   myBike.move_forward();
   myBike.stop();
