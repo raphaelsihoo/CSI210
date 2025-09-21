@@ -116,7 +116,7 @@ class Grid {
   
     void printGrid() {
       for (int i = 0; i < n; i++) {
-          String rowStr = "[" + grid[i].join(",  ") + "]";
+          String rowStr = "[" + grid[i].join(",  ") + "]"; // join allows to convert List to String with a separator
           print(rowStr);
       }
     }
