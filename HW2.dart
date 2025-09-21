@@ -158,3 +158,16 @@ void main() {
     rg.addRiver();
     rg.printGrid();
 }
+
+/* MEMO
+1.) Was "RiverGrid" easy to implement due to inheritance?
+    - Yes, it was easy to implement because I only needed to add the addRiver() method and call the parent constructor using super(n).
+
+2.) If I needed to run an algorithm over a mix of Grid and RiverGrid Objects, does your implementation make this easy?
+    - Yes, it does. Since RiverGrid is a subclass of Grid, I can use polymorphism to treat both of them as Grid objects.
+    This allows me to run the same algorithm on a list of Grid and RiverGrid objects without needing to know their specific types.
+
+3.) Changes to Grid have an impact on RiverGrid. Describe some changes that may break RiverGrid. Can you change your RiverGrid to be immune to most changes?
+    - If I change the constructor of Grid to take additional parameters or change its features, it may break RiverGrid because it relies on the parent constructor.
+    To make RiverGrid immune to most changes, I can avoid relying on the parent constructor and directly initialize the grid in RiverGrid's constructor.
+*/
