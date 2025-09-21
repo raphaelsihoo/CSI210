@@ -127,8 +127,20 @@ class RiverGrid extends Grid { // inheritance
         // additional initialization if needed
     }
 
+    
     void addRiver() {
         for (int i = 0; i < n; i++) {
+            // Move population that existed in those cells to adjacent cells before setting to 0
+            if (i == 0) {
+                // edge case for top-left corner
+                grid[i][i + 1] += grid[i][i]; // move to right cell
+            } else if (i > 0) {
+                if (i + 1 < n) { // check if right cell exists
+                    grid[i][i + 1] += grid[i][i]; // move to right cell
+                } else {
+                    grid[i][i - 1] += grid[i][i]; // move to left cell
+                }
+            }
             grid[i][i] = 0; // set diagonal cells to 0
         }
     }
