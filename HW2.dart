@@ -122,8 +122,27 @@ class Grid {
     }
 }
 
+class RiverGrid extends Grid { // inheritance
+    RiverGrid(int n) : super(n) { // super calls the parent constructor
+        // additional initialization if needed
+    }
+
+    void addRiver() {
+        for (int i = 0; i < n; i++) {
+            grid[i][i] = 0; // set diagonal cells to 0
+        }
+    }
+}
+
 void main() {
-    Grid g = new Grid(10); // 10 by 10 cell as an example
-    g.cityPopulate();
-    g.printGrid();
+    // Grid g = new Grid(10); // 10 by 10 cell as an example
+    // g.cityPopulate();
+    // g.printGrid();
+
+
+    // RiverGrid example
+    RiverGrid rg = new RiverGrid(10);
+    rg.cityPopulate();
+    rg.addRiver();
+    rg.printGrid();
 }
