@@ -3,8 +3,8 @@ import 'package:flutter/material.dart'; // import the material package
 
 void main() => runApp(const MyApp()); // the main function to run the app (MyApp is the root widget)
 
-class MyApp extends StatelessWidget { // MyApp is a stateless widget meaning it doesn't maintain any state (doesn't change)
-  const MyApp({super.key}); // constructor for MyApp with a key (super.key passes the key to the superclass)
+class MyApp extends StatelessWidget { // MyApp is a stateless widget meaning it doesn't maintain any state (doesn't change) (MyApp can be any widget name)
+  const MyApp({super.key}); // constructor for MyApp with a key (super.key passes the key to the superclass) key is an identifier for widgets, used by Flutter to differentiate between widgets in the widget tree.
 
   static const appTitle = 'Drawer Demo+'; // a static constant for the app title (static means it belongs to the class, not instances) That title is used in the app bar and the home page
 
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget { // MyApp is a stateless widget meaning it 
 class MyHomePage extends StatefulWidget { // this page can change while the app is running (stateful widget)
   const MyHomePage({super.key, required this.title}); // to build this page, a title is required which is 'Drawer Demo'
 
-  final String title;
+  final String title; // this is a property of MyHomePage that holds the title string passed in the constructor. title = 'Drawer Demo+'
 
   // This is stateful widget, so it needs another object to remember its current state (situation). So, it creates a State object (below) that contains the actual changing stuff. The framework calls createState() when it wants to build the widget.
   @override
@@ -64,15 +64,25 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
     Text('Financial Aid', style: optionStyle), // 2
     Text('Tax Information', style: optionStyle), // 3
     Text('Banking Information', style: optionStyle), // 4
-    Text('Employment', style: optionStyle), // 5
-    Text('Academics', style: optionStyle), // 6
-    Text('User Options', style: optionStyle), // 7
+    Text('Employee', style: optionStyle), // 5
+    Text('Student Planning', style: optionStyle), // 6
+    Text('Course Schedule & Catalog', style: optionStyle), // 7
+    Text('Grades', style: optionStyle), // 8
+    Text('Graduation Application', style: optionStyle), // 9
+    Text('Unofficial Transcript', style: optionStyle), // 10
+    Text('Transfer Summary', style: optionStyle), // 11
+    Text('User Profile', style: optionStyle), // 12
+    Text('Emergency Information', style: optionStyle), // 13
+    Text('View/Add Proxy Access', style: optionStyle), // 14
+    Text('Student Records Release (FERPA)', style: optionStyle), // 15
   ]; 
 
   // Titles to show in AppBar for each selected index 
   static const List<String> _titles = <String>[
     'Home', 'Student Finance', 'Financial Aid', 'Tax Information',
-    'Banking Information', 'Employment', 'Academics', 'User Options'
+    'Banking Information', 'Employee', 'Student Planning', 'Course Schedule & Catalog',
+    'Grades', 'Graduation Application', 'Unofficial Transcript', 'Transfer Summary',
+    'User Profile', 'Emergency Information', 'View/Add Proxy Access', 'Student Records Release (FERPA)',
   ];
   
   void _onItemTapped(int index) { // When you tap a drawer item ("Home," "Business," etc.), this function runs.
@@ -93,8 +103,8 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
     // Groups of indices for each panel
     const financeGroup = <int>[1, 2, 3, 4];
     const employmentGroup = <int>[5];
-    const academicsGroup = <int>[6];
-    const userOptionsGroup = <int>[7];
+    const academicsGroup = <int>[6, 7, 8, 9, 10, 11];
+    const userOptionsGroup = <int>[12, 13, 14, 15];
     
     return Scaffold( // Scaffold is the page layout structure from the material library - it gives you an AppBar, Drawer, Body, etc. You can think of it like a basic page template.
      appBar: AppBar(
@@ -136,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
        child: SafeArea(
          child: Column(
            children: [
-             const UserAccountsDrawerHeader(
+             const UserAccountsDrawerHeader( // This is the top part of the drawer with user info. It has a background color, user name, email, and avatar.
                currentAccountPicture: CircleAvatar(child: Text('S')),
                accountName: Text('Sihoo Kim'),
                accountEmail: Text('sihoo@example.com'),
@@ -151,10 +161,10 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
 
 
              // Scrollable area of items/panels
-             Expanded(
+             Expanded( // Expanded = This makes the drawer items take up all the remaining space below the header and above the logout button.
                child: ListView( // Important: Remove any padding from the ListView.
                  padding: EdgeInsets.zero, // this removes any default padding (space) at the top of the list. We want the drawer header to go all the way to the top.
-                 children: [ // the items in the drawer
+                 children: [ 
                    // HOME (always goes to main page)
                    ListTile(
                      leading: const Icon(Icons.home),
@@ -167,13 +177,13 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
 
 
                    // FINANCIAL INFORMATION panel
-                   ExpansionTile(
+                   ExpansionTile( // ExpansionTile = a tile that can expand or collapse to show/hide its children
                      leading: const Icon(Icons.account_balance),
                      title: const Text(
                        'Financial Information',
-                       style: TextStyle(fontWeight: FontWeight.w700),
+                       style: TextStyle(fontWeight: FontWeight.w700), // w700 = bold
                      ),
-                     initiallyExpanded: _panelHasSelection(financeGroup),
+                     initiallyExpanded: _panelHasSelection(financeGroup), // This makes the panel start expanded if any of its items are selected
                      childrenPadding:
                          const EdgeInsets.only(left: 16, bottom: 8),
                      children: [
@@ -221,7 +231,7 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
                          const EdgeInsets.only(left: 16, bottom: 8),
                      children: [
                        ListTile(
-                         title: const Text('Employment'),
+                         title: const Text('Employee'),
                          selected: _selectedIndex == 5,
                          selectedTileColor:
                              Colors.indigo.withOpacity(0.08),
@@ -243,12 +253,47 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
                          const EdgeInsets.only(left: 16, bottom: 8),
                      children: [
                        ListTile(
-                         title: const Text('Academics'),
+                         title: const Text('Student Planning'),
                          selected: _selectedIndex == 6,
                          selectedTileColor:
                              Colors.indigo.withOpacity(0.08),
                          onTap: () => _onItemTapped(6),
                        ),
+                        ListTile(
+                          title: const Text('Course Schedule & Catalog'),
+                          selected: _selectedIndex == 7,
+                          selectedTileColor:
+                              Colors.indigo.withOpacity(0.08),
+                          onTap: () => _onItemTapped(7),
+                        ),
+                        ListTile(
+                          title: const Text('Grades'),
+                          selected: _selectedIndex == 8,
+                          selectedTileColor:
+                              Colors.indigo.withOpacity(0.08),
+                          onTap: () => _onItemTapped(8),
+                        ),
+                        ListTile(
+                          title: const Text('Graduation Application'),
+                          selected: _selectedIndex == 9,
+                          selectedTileColor:
+                              Colors.indigo.withOpacity(0.08),
+                          onTap: () => _onItemTapped(9),
+                        ),
+                        ListTile(
+                          title: const Text('Unofficial Transcript'),
+                          selected: _selectedIndex == 10,
+                          selectedTileColor:
+                              Colors.indigo.withOpacity(0.08),
+                          onTap: () => _onItemTapped(10), 
+                        ),
+                        ListTile(
+                          title: const Text('Transfer Summary'),
+                          selected: _selectedIndex == 11,
+                          selectedTileColor:
+                              Colors.indigo.withOpacity(0.08),
+                          onTap: () => _onItemTapped(11),
+                        ),
                      ],
                    ),
 
@@ -265,12 +310,33 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
                          const EdgeInsets.only(left: 16, bottom: 8),
                      children: [
                        ListTile(
-                         title: const Text('User Options'),
+                         title: const Text('User Profile'),
                          selected: _selectedIndex == 7,
                          selectedTileColor:
                              Colors.indigo.withOpacity(0.08),
                          onTap: () => _onItemTapped(7),
                        ),
+                        ListTile(
+                          title: const Text('Emergency Information'),
+                          selected: _selectedIndex == 13,
+                          selectedTileColor:
+                              Colors.indigo.withOpacity(0.08),
+                          onTap: () => _onItemTapped(13),
+                        ),
+                        ListTile(
+                          title: const Text('View/Add Proxy Access'),
+                          selected: _selectedIndex == 14,
+                          selectedTileColor:
+                              Colors.indigo.withOpacity(0.08),
+                          onTap: () => _onItemTapped(14),
+                        ),
+                        ListTile(
+                          title: const Text('Student Records Release (FERPA)'),
+                          selected: _selectedIndex == 15,
+                          selectedTileColor:
+                              Colors.indigo.withOpacity(0.08),
+                          onTap: () => _onItemTapped(15),
+                        ),
                      ],
                    ),
                  ],
