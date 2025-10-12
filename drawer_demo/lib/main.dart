@@ -69,97 +69,233 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
     Text('User Options', style: optionStyle), // 7
   ]; 
 
+  // Titles to show in AppBar for each selected index 
+  static const List<String> _titles = <String>[
+    'Home', 'Student Finance', 'Financial Aid', 'Tax Information',
+    'Banking Information', 'Employment', 'Academics', 'User Options'
+  ];
+  
   void _onItemTapped(int index) { // When you tap a drawer item ("Home," "Business," etc.), this function runs.
     setState(() {
       _selectedIndex = index;
     });
+    Navigator.pop(context); 
   } // setState() is a special method that tells Flutter "Hey, something changed! You need to rebuild the UI." When you call setState(), Flutter will call the build() method again, and the UI will update to reflect the new state.
-    // Inside it, _selectedIndex = index; updates which item is selected based on what you tapped. Flutter then re-calls build(), and the screen updates to show the corresponding text.
+    // Inside it, _selectedIndex = index; updates which item is selected based on what you tapped. Navigator.pop(context); closes drawer after selection
+    // Flutter then re-calls build(), and the screen updates to show the corresponding text.
     // This is how this app actually responds to user interaction.
+  
+  // Helpers for panels
+  bool _panelHasSelection(List<int> indices) => indices.contains(_selectedIndex);
 
   @override
   Widget build(BuildContext context) { // Flutter calls build() whenever it needs to redraw this part of the UI (ex. after you tap something and call setState())
+    // Groups of indices for each panel
+    const financeGroup = <int>[1, 2, 3, 4];
+    const employmentGroup = <int>[5];
+    const academicsGroup = <int>[6];
+    const userOptionsGroup = <int>[7];
+    
     return Scaffold( // Scaffold is the page layout structure from the material library - it gives you an AppBar, Drawer, Body, etc. You can think of it like a basic page template.
-      appBar: AppBar(
-        title: Text(widget.title),
-        leading: Builder(
-          builder: (context) { // new context that is a descendant of the Scaffold
-            return IconButton(
-              icon: const Icon(Icons.menu), // the menu icon (☰)
-              onPressed: () {
-                Scaffold.of(context).openDrawer(); // opens the drawer panel
-              },
-            );
-          },
-        ),
-      ),
-      /*
-        AppBar = the top blue bar at the top of the screen
-        title: Text(widget.title) = this shows the title passed from MyApp ('Drawer Demo') in the app bar
-        The menu button (☰) on the left is made with IconButton. When you tap it, it calls Scaffold.of(context).openDrawer(), which opens the drawer panel.
-        Builder(
-          builder: (context) {...}
-        )
-        The reason for using Builder(context) is to get a new context that is a descendant of the Scaffold. This is necessary because the original context passed to build() is above the Scaffold in the widget tree, so calling Scaffold.of(context) would not find the Scaffold. By using Builder, we create a new context that is inside the Scaffold, allowing us to access it properly.
-        In other words, the Builder(context) is saying "Hey Flutter, please give me a new context that starts inside this part of the widget tree." Then, Flutter looks upward and finds the Scaffold, bc this new context is now below it in the hierarchy. 
-        Now, when we call Scaffold.of(context).openDrawer(), it works correctly and opens the drawer.
-        
-      */
+     appBar: AppBar(
+       title: Text(_titles[_selectedIndex]),
+       leading: Builder(
+         builder: (context) { // new context that is a descendant of the Scaffold
+           return IconButton(
+             icon: const Icon(Icons.menu),
+             onPressed: () => Scaffold.of(context).openDrawer(),
+           );
+         },
+       ),
+     ),
+
+     /*
+       AppBar = the top blue bar at the top of the screen
+       title: Text(_titles[_selectedIndex]) = this shows the title passed from MyApp ('Drawer Demo') in the app bar
+       The menu button (☰) on the left is made with IconButton. When you tap it, it calls Scaffold.of(context).openDrawer(), which opens the drawer panel.
+       Builder(
+         builder: (context) {...}
+       )
+       The reason for using Builder(context) is to get a new context that is a descendant of the Scaffold. This is necessary because the original context passed to build() is above the Scaffold in the widget tree, so calling Scaffold.of(context) would not find the Scaffold. By using Builder, we create a new context that is inside the Scaffold, allowing us to access it properly.
+       In other words, the Builder(context) is saying "Hey Flutter, please give me a new context that starts inside this part of the widget tree." Then, Flutter looks upward and finds the Scaffold, bc this new context is now below it in the hierarchy.
+       Now, when we call Scaffold.of(context).openDrawer(), it works correctly and opens the drawer.
       
-      body: Center(child: _widgetOptions[_selectedIndex]),
-      // This is what you see on the main screen. It shows one of the three texts ("Home," "Business," or "School") based on the selected index.
-      // Center = This just makes sure the text is in the middle of the screen.
+     */
 
-      drawer: Drawer( // Drawer = the sliding side panel that comes in from the left. It contains a ListView - a scrollable list(column) of items.
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero, // this removes any default padding (space) at the top of the list. We want the drawer header to go all the way to the top.
-          children: [ // the items in the drawer
+     // Body still uses your original _widgetOptions[_selectedIndex]
+     body: Center(child: _widgetOptions[_selectedIndex]), // This is what you see on the main screen. It shows one of the three texts ("Home," "Business," or "School") based on the selected index.
+     // Center = This just makes sure the text is in the middle of the screen.
 
-            const DrawerHeader( 
-              decoration: BoxDecoration(color: Colors.blue),
-              child: Text('Drawer Header'),
-            ),
-            /*
-              DrawerHeader = The top part of the drawer (special header section).
-              It has a blue background and a text label ("Drawer Header").
-              Think of it like the title area of the drawer.
-            */
+     drawer: Drawer( // Drawer = the sliding side panel that comes in from the left. It contains a ListView - a scrollable list(column) of items.
+       shape: const RoundedRectangleBorder(
+         borderRadius: BorderRadius.only(
+           topRight: Radius.circular(20),
+           bottomRight: Radius.circular(20),
+         ),
+       ),
+       child: SafeArea(
+         child: Column(
+           children: [
+             const UserAccountsDrawerHeader(
+               currentAccountPicture: CircleAvatar(child: Text('S')),
+               accountName: Text('Sihoo Kim'),
+               accountEmail: Text('sihoo@example.com'),
+               decoration: BoxDecoration(
+                 gradient: LinearGradient(
+                   colors: [Colors.black87, Colors.black54],
+                   begin: Alignment.topLeft,
+                   end: Alignment.bottomRight,
+                 ),
+               ),
+             ),
 
-            // Each ListTile is a clickable item in the drawer.
-            ListTile(
-              title: const Text('Home'),
-              selected: _selectedIndex == 0, // highlights this item if it's selected. Highlighting gives visual feedback to the user about which section they are currently viewing. It's a boolean expression that checks if the current selected index (_selectedIndex) is 0 (the index for "Home"). If it is, selected becomes true, and the ListTile gets highlighted. Flutter's ListTile widget has built-in support for highlighting when selected is true, usually by changing the background color or text style to indicate that this item is active or chosen.
-              onTap: () { // Action when you tap this item
-                // Update the state of the app
-                _onItemTapped(0);
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Business'),
-              selected: _selectedIndex == 1,
-              onTap: () {
-                // Update the state of the app
-                _onItemTapped(1);
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('School'),
-              selected: _selectedIndex == 2,
-              onTap: () {
-                // Update the state of the app
-                _onItemTapped(2);
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
+
+             // Scrollable area of items/panels
+             Expanded(
+               child: ListView( // Important: Remove any padding from the ListView.
+                 padding: EdgeInsets.zero, // this removes any default padding (space) at the top of the list. We want the drawer header to go all the way to the top.
+                 children: [ // the items in the drawer
+                   // HOME (always goes to main page)
+                   ListTile(
+                     leading: const Icon(Icons.home),
+                     title: const Text('Home'),
+                     selected: _selectedIndex == 0,
+                     selectedTileColor: Colors.indigo.withOpacity(0.12),
+                     onTap: () => _onItemTapped(0),
+                   ),
+                   const Divider(height: 1),
+
+
+                   // FINANCIAL INFORMATION panel
+                   ExpansionTile(
+                     leading: const Icon(Icons.account_balance),
+                     title: const Text(
+                       'Financial Information',
+                       style: TextStyle(fontWeight: FontWeight.w700),
+                     ),
+                     initiallyExpanded: _panelHasSelection(financeGroup),
+                     childrenPadding:
+                         const EdgeInsets.only(left: 16, bottom: 8),
+                     children: [
+                       ListTile(
+                         title: const Text('Student Finance'),
+                         selected: _selectedIndex == 1,
+                         selectedTileColor:
+                             Colors.indigo.withOpacity(0.08),
+                         onTap: () => _onItemTapped(1),
+                       ),
+                       ListTile(
+                         title: const Text('Financial Aid'),
+                         selected: _selectedIndex == 2,
+                         selectedTileColor:
+                             Colors.indigo.withOpacity(0.08),
+                         onTap: () => _onItemTapped(2),
+                       ),
+                       ListTile(
+                         title: const Text('Tax Information'),
+                         selected: _selectedIndex == 3,
+                         selectedTileColor:
+                             Colors.indigo.withOpacity(0.08),
+                         onTap: () => _onItemTapped(3),
+                       ),
+                       ListTile(
+                         title: const Text('Banking Information'),
+                         selected: _selectedIndex == 4,
+                         selectedTileColor:
+                             Colors.indigo.withOpacity(0.08),
+                         onTap: () => _onItemTapped(4),
+                       ),
+                     ],
+                   ),
+
+
+                   // EMPLOYMENT panel
+                   ExpansionTile(
+                     leading: const Icon(Icons.payments),
+                     title: const Text(
+                       'Employment',
+                       style: TextStyle(fontWeight: FontWeight.w700),
+                     ),
+                     initiallyExpanded: _panelHasSelection(employmentGroup),
+                     childrenPadding:
+                         const EdgeInsets.only(left: 16, bottom: 8),
+                     children: [
+                       ListTile(
+                         title: const Text('Employment'),
+                         selected: _selectedIndex == 5,
+                         selectedTileColor:
+                             Colors.indigo.withOpacity(0.08),
+                         onTap: () => _onItemTapped(5),
+                       ),
+                     ],
+                   ),
+
+
+                   // ACADEMICS panel
+                   ExpansionTile(
+                     leading: const Icon(Icons.school),
+                     title: const Text(
+                       'Academics',
+                       style: TextStyle(fontWeight: FontWeight.w700),
+                     ),
+                     initiallyExpanded: _panelHasSelection(academicsGroup),
+                     childrenPadding:
+                         const EdgeInsets.only(left: 16, bottom: 8),
+                     children: [
+                       ListTile(
+                         title: const Text('Academics'),
+                         selected: _selectedIndex == 6,
+                         selectedTileColor:
+                             Colors.indigo.withOpacity(0.08),
+                         onTap: () => _onItemTapped(6),
+                       ),
+                     ],
+                   ),
+
+
+                   // USER OPTIONS panel
+                   ExpansionTile(
+                     leading: const Icon(Icons.person),
+                     title: const Text(
+                       'User Options',
+                       style: TextStyle(fontWeight: FontWeight.w700),
+                     ),
+                     initiallyExpanded: _panelHasSelection(userOptionsGroup),
+                     childrenPadding:
+                         const EdgeInsets.only(left: 16, bottom: 8),
+                     children: [
+                       ListTile(
+                         title: const Text('User Options'),
+                         selected: _selectedIndex == 7,
+                         selectedTileColor:
+                             Colors.indigo.withOpacity(0.08),
+                         onTap: () => _onItemTapped(7),
+                       ),
+                     ],
+                   ),
+                 ],
+               ),
+             ),
+
+
+             const Divider(height: 1),
+
+
+             // Bottom Logout
+             ListTile(
+               leading: const Icon(Icons.logout),
+               title: const Text('Logout'),
+               onTap: () {
+                 Navigator.pop(context);
+                 ScaffoldMessenger.of(context).showSnackBar(
+                   const SnackBar(content: Text('Logged out (demo).')),
+                 );
+               },
+             ),
+           ],
+         ),
+       ),
+     ),
+   );
   }
 }
