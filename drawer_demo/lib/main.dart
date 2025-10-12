@@ -6,14 +6,18 @@ void main() => runApp(const MyApp()); // the main function to run the app (MyApp
 class MyApp extends StatelessWidget { // MyApp is a stateless widget meaning it doesn't maintain any state (doesn't change)
   const MyApp({super.key}); // constructor for MyApp with a key (super.key passes the key to the superclass)
 
-  static const appTitle = 'Drawer Demo'; // a static constant for the app title (static means it belongs to the class, not instances) That title is used in the app bar and the home page
+  static const appTitle = 'Drawer Demo+'; // a static constant for the app title (static means it belongs to the class, not instances) That title is used in the app bar and the home page
 
   @override
   Widget build(BuildContext context) { // This is like "Whenever Flutter needs to draw this widget, it calls this build method and asks: 'What should I show right now?'" The 'Widget' is the return type of the method (it returns a widget)
   //(BuildContext is a reference to where you are in the widget tree) With it, you can access theme data, other widgets, etc. and 'context' is the name of that parameter. So, when Flutter calls this method, it will pass in the appropriate context.
-    return const MaterialApp( // then it returns a MaterialApp widget (the root of the app) => a widget that introduces a number of widgets (like Navigator, Theme) that are commonly required for material design applications.
-      title: appTitle, 
-      home: MyHomePage(title: appTitle), // MyHomePage is the home screen of the app (home is the default route of the app) and it is stateful (can change)
+    return MaterialApp( // then it returns a MaterialApp widget (the root of the app) => a widget that introduces a number of widgets (like Navigator, Theme) that are commonly required for material design applications.
+      title: appTitle,
+      theme: ThemeData(
+        colorSchemeSeed: Colors.indigo,
+        useMaterial3: true,
+      ),
+      home: const MyHomePage(title: appTitle), // MyHomePage is the home screen of the app (home is the default route of the app) and it is stateful (can change)
     );
   }
 }
@@ -21,7 +25,7 @@ class MyApp extends StatelessWidget { // MyApp is a stateless widget meaning it 
 class MyHomePage extends StatefulWidget { // this page can change while the app is running (stateful widget)
   const MyHomePage({super.key, required this.title}); // to build this page, a title is required which is 'Drawer Demo'
 
-  final String title; 
+  final String title;
 
   // This is stateful widget, so it needs another object to remember its current state (situation). So, it creates a State object (below) that contains the actual changing stuff. The framework calls createState() when it wants to build the widget.
   @override
@@ -40,17 +44,29 @@ class MyHomePage extends StatefulWidget { // this page can change while the app 
 }
 
 class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff brain for that page. Think of MyHomePage as the container, and _MyHomePageState as the notebook inside it that keeps track of changing information - in this case, which item is selected in the drawer.
+  // ──────────────────────────────────────────────────────────────────────────
+  // Keep your original state variable and widget list, just expanded.
+  // Index map:
+  // 0: Home
+  // 1: Student Finance, 2: Financial Aid, 3: Tax Information, 4: Banking Information
+  // 5: Employment, 6: Academics, 7: User Options
+  // ──────────────────────────────────────────────────────────────────────────
   int _selectedIndex = 0; // this variable keeps track of which item is selected in the drawer (0 means the first item is selected by default - which is 'Home')
 
-  static const TextStyle optionStyle = TextStyle( // This sets a text style we can reuse. It says "Make text big (30) and bold." static means it is fixed (doesn't change) and belongs to the class, not instances. That is, all instances of _MyHomePageState share this same optionStyle.
-    fontSize: 30,
+  static const TextStyle optionStyle = TextStyle( // This sets a text style we can reuse. It says "Make text big (26) and bold." static means it is fixed (doesn't change) and belongs to the class, not instances. That is, all instances of _MyHomePageState share this same optionStyle.
+    fontSize: 26,
     fontWeight: FontWeight.bold,
   ); 
 
   static const List<Widget> _widgetOptions = <Widget>[ // This is a list of screens - each one is a simple Text widget. So, depending on _selectedIndex, one of these three lines of text will appear on screen.
-    Text('Index 0: Home', style: optionStyle),
-    Text('Index 1: Business', style: optionStyle),
-    Text('Index 2: School', style: optionStyle),
+    Text('Welcome Home', style: optionStyle), // index 0
+    Text('Student Finance', style: optionStyle), // 1
+    Text('Financial Aid', style: optionStyle), // 2
+    Text('Tax Information', style: optionStyle), // 3
+    Text('Banking Information', style: optionStyle), // 4
+    Text('Employment', style: optionStyle), // 5
+    Text('Academics', style: optionStyle), // 6
+    Text('User Options', style: optionStyle), // 7
   ]; 
 
   void _onItemTapped(int index) { // When you tap a drawer item ("Home," "Business," etc.), this function runs.
