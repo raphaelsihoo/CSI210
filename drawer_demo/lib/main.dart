@@ -119,12 +119,12 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
     // ──────────────────────────────────────────────────────────────────────────
     return Scaffold( // Scaffold is the page layout structure from the material library - it gives you an AppBar, Drawer, Body, etc. You can think of it like a basic page template.
      appBar: AppBar(
-       title: Text(_titles[_selectedIndex]),
-       leading: Builder(
+       title: Text(_titles[_selectedIndex]), // the title in the middle of the app bar (based on the selected index)
+       leading: Builder( // leading = the icon/button on the left side of the app bar (usually a back button or menu button)
          builder: (context) { // new context that is a descendant of the Scaffold
            return IconButton(
              icon: const Icon(Icons.menu),
-             onPressed: () => Scaffold.of(context).openDrawer(),
+             onPressed: () => Scaffold.of(context).openDrawer(), // opens the drawer when tapped
            );
          },
        ),
