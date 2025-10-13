@@ -4,7 +4,7 @@ import 'package:flutter/material.dart'; // import the material package
 void main() => runApp(const MyApp()); // the main function to run the app (MyApp is the root widget)
 
 class MyApp extends StatelessWidget { // MyApp is a stateless widget meaning it doesn't maintain any state (doesn't change) (MyApp can be any widget name)
-  const MyApp({super.key}); // constructor for MyApp with a key (super.key passes the key to the superclass) key is an identifier for widgets, used by Flutter to differentiate between widgets in the widget tree.
+  const MyApp({super.key}); // constructor for MyApp with a key (super.key passes the key to the superclass) key is an identifier for widgets, used by Flutter to differentiate between widgets in the widget tree. So, the key helps Flutter keep track of widgets in the tree.
 
   static const appTitle = 'Drawer Demo+'; // a static constant for the app title (static means it belongs to the class, not instances) That title is used in the app bar and the home page
 
@@ -23,9 +23,9 @@ class MyApp extends StatelessWidget { // MyApp is a stateless widget meaning it 
 }
 
 class MyHomePage extends StatefulWidget { // this page can change while the app is running (stateful widget)
-  const MyHomePage({super.key, required this.title}); // to build this page, a title is required which is 'Drawer Demo'
+  const MyHomePage({super.key, required this.title}); // to build this page, a title is required which is 'Drawer Demo+' passed from MyApp
 
-  final String title; // this is a property of MyHomePage that holds the title string passed in the constructor. title = 'Drawer Demo+'
+  final String title; // this is a property of MyHomePage that holds the title string passed in the constructor. title = 'Drawer Demo+' Basically, it stores the title so it can be used later in the widget. (widget.title to access it in the state class)
 
   // This is stateful widget, so it needs another object to remember its current state (situation). So, it creates a State object (below) that contains the actual changing stuff. The framework calls createState() when it wants to build the widget.
   @override
@@ -49,7 +49,10 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
   // Index map:
   // 0: Home
   // 1: Student Finance, 2: Financial Aid, 3: Tax Information, 4: Banking Information
-  // 5: Employment, 6: Academics, 7: User Options
+  // 5: Employee, 6: Student Planning, 7: Course Schedule & Catalog, 8: Grades
+  // 9: Graduation Application, 10: Unofficial Transcript, 11: Transfer Summary
+  // 12: User Profile, 13: Emergency Information, 14: View/Add Proxy Access
+  // 15: Student Records Release (FERPA)
   // ──────────────────────────────────────────────────────────────────────────
   int _selectedIndex = 0; // this variable keeps track of which item is selected in the drawer (0 means the first item is selected by default - which is 'Home')
 
@@ -76,6 +79,7 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
     Text('View/Add Proxy Access', style: optionStyle), // 14
     Text('Student Records Release (FERPA)', style: optionStyle), // 15
   ]; 
+  // The body (below) will show one of these texts based on the selected index. (ex. _widgetOptions[0] shows "Welcome Home")
 
   // Titles to show in AppBar for each selected index 
   static const List<String> _titles = <String>[
@@ -83,7 +87,8 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
     'Banking Information', 'Employee', 'Student Planning', 'Course Schedule & Catalog',
     'Grades', 'Graduation Application', 'Unofficial Transcript', 'Transfer Summary',
     'User Profile', 'Emergency Information', 'View/Add Proxy Access', 'Student Records Release (FERPA)',
-  ];
+  ]; // Matching titles for each screen to show in the app bar
+  // AppBar (below) will show one of these titles based on the selected index. (ex. _titles[0] shows "Home")
   
   void _onItemTapped(int index) { // When you tap a drawer item ("Home," "Business," etc.), this function runs.
     setState(() {
@@ -96,16 +101,22 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
     // This is how this app actually responds to user interaction.
   
   // Helpers for panels
-  bool _panelHasSelection(List<int> indices) => indices.contains(_selectedIndex);
+  bool _panelHasSelection(List<int> indices) => indices.contains(_selectedIndex); // Used by panels (ExpansionTile) to decide whether they should be initially expanded or not. It checks if the current selected index is in the list of indices for that panel. If yes, it returns true (expand the panel); otherwise, false (keep it collapsed).
 
   @override
   Widget build(BuildContext context) { // Flutter calls build() whenever it needs to redraw this part of the UI (ex. after you tap something and call setState())
-    // Groups of indices for each panel
+    // Groups of indices for each collapsible panel
     const financeGroup = <int>[1, 2, 3, 4];
     const employmentGroup = <int>[5];
     const academicsGroup = <int>[6, 7, 8, 9, 10, 11];
     const userOptionsGroup = <int>[12, 13, 14, 15];
     
+    // The structure of Scaffold
+    // ──────────────────────────────────────────────────────────────────────────
+    // AppBar = Top bar -> Displays the title and menu button on home screen
+    // Body = Main content area -> Shows the selected widget based on the drawer item tapped on home screen
+    // Drawer = Side menu -> Contains the list of items for navigation
+    // ──────────────────────────────────────────────────────────────────────────
     return Scaffold( // Scaffold is the page layout structure from the material library - it gives you an AppBar, Drawer, Body, etc. You can think of it like a basic page template.
      appBar: AppBar(
        title: Text(_titles[_selectedIndex]),
@@ -136,44 +147,63 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
      body: Center(child: _widgetOptions[_selectedIndex]), // This is what you see on the main screen. It shows one of the three texts ("Home," "Business," or "School") based on the selected index.
      // Center = This just makes sure the text is in the middle of the screen.
 
+     // Technically, the layout of drawer starts from here
      drawer: Drawer( // Drawer = the sliding side panel that comes in from the left. It contains a ListView - a scrollable list(column) of items.
-       shape: const RoundedRectangleBorder(
-         borderRadius: BorderRadius.only(
+       // shape: RoundedRectangleBorder = This customizes the shape of the drawer. By default, drawers are rectangular with sharp corners. Here, we use RoundedRectangleBorder to give it rounded corners on the right side.
+       shape: const RoundedRectangleBorder( // This gives the drawer rounded corners
+         borderRadius: BorderRadius.only( // BorderRadius.only = allows you to specify which corners to round
+           // Rounds the top-right and bottom-right corners of the drawer
            topRight: Radius.circular(20),
            bottomRight: Radius.circular(20),
          ),
        ),
-       child: SafeArea(
-         child: Column(
-           children: [
+
+       // The body of the drawer
+       // The structure of the body of the drawer
+       // ──────────────────────────────────────────────────────────────────────────
+       // SafeArea = Ensures content is not blocked by system UI (like notch, status bar)
+       // Column = Vertical layout of drawer content
+       //   UserAccountsDrawerHeader = Top part with user info
+       //   Expanded = Makes the list of items take up remaining space
+       //     ListView = Scrollable list of drawer items
+       //   Divider = A line to separate sections
+       //   ListTile = Bottom logout button
+       // ──────────────────────────────────────────────────────────────────────────
+       child: SafeArea( // avoiding notch/status bar areas on phones means "Make sure nothing important is hidden behind the phone's notch or status bar."
+         child: Column( // vertical layout of drawer content (header -> menu list -> logout button)
+           children: [ // Start of the vertical list of items in the drawer
+             // Header
              const UserAccountsDrawerHeader( // This is the top part of the drawer with user info. It has a background color, user name, email, and avatar.
-               currentAccountPicture: CircleAvatar(child: Text('S')),
+               currentAccountPicture: CircleAvatar(child: Text('S')), // CircleAvatar = circular icon with the letter 'S' inside (for Sihoo)
+               // Name and email shown under the avatar
                accountName: Text('Sihoo Kim'),
                accountEmail: Text('sihoo@example.com'),
-               decoration: BoxDecoration(
-                 gradient: LinearGradient(
+               // Background decoration with a gradient from dark to light
+               decoration: BoxDecoration( // BoxDecoration = allows you to customize the background of the header
+                 gradient: LinearGradient( // LinearGradient = creates a gradient effect
                    colors: [Colors.black87, Colors.black54],
-                   begin: Alignment.topLeft,
+                   // Gradient goes from top-left (dark) to bottom-right (light)
+                   begin: Alignment.topLeft, 
                    end: Alignment.bottomRight,
                  ),
                ),
              ),
 
-
              // Scrollable area of items/panels
              Expanded( // Expanded = This makes the drawer items take up all the remaining space below the header and above the logout button.
-               child: ListView( // Important: Remove any padding from the ListView.
+               child: ListView( // ListView = a scrollable list of items (like a column that can scroll if it overflows)
+                // Important: Remove any padding from the ListView.
                  padding: EdgeInsets.zero, // this removes any default padding (space) at the top of the list. We want the drawer header to go all the way to the top.
                  children: [ 
                    // HOME (always goes to main page)
-                   ListTile(
-                     leading: const Icon(Icons.home),
-                     title: const Text('Home'),
-                     selected: _selectedIndex == 0,
-                     selectedTileColor: Colors.indigo.withOpacity(0.12),
-                     onTap: () => _onItemTapped(0),
+                   ListTile( // ListTile = a single item in the list with an icon and text
+                     leading: const Icon(Icons.home), // leading = icon on the left side (home icon)
+                     title: const Text('Home'), // title = text next to the icon
+                     selected: _selectedIndex == 0, // selected = highlights this item if it is the currently selected one (index 0 = Home)
+                     selectedTileColor: Colors.indigo.withOpacity(0.12), // selectedTileColor = background color when selected (indigo with some transparency)
+                     onTap: () => _onItemTapped(0), // When tapped, it calls _onItemTapped(0) to update the selected index and close the drawer
                    ),
-                   const Divider(height: 1),
+                   const Divider(height: 1), // Divider = a horizontal line to separate sections (height: 1 means it's a thin line) So, it's a thin separator line under Home
 
 
                    // FINANCIAL INFORMATION panel
@@ -226,13 +256,13 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
                        'Employment',
                        style: TextStyle(fontWeight: FontWeight.w700),
                      ),
-                     initiallyExpanded: _panelHasSelection(employmentGroup),
+                     initiallyExpanded: _panelHasSelection(employmentGroup), // this works bc employmentGroup = [5] and _selectedIndex is 5 when "Employee" is selected
                      childrenPadding:
                          const EdgeInsets.only(left: 16, bottom: 8),
                      children: [
                        ListTile(
                          title: const Text('Employee'),
-                         selected: _selectedIndex == 5,
+                         selected: _selectedIndex == 5, // this works bc "Employee" is index 5 in the list
                          selectedTileColor:
                              Colors.indigo.withOpacity(0.08),
                          onTap: () => _onItemTapped(5),
@@ -311,10 +341,10 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
                      children: [
                        ListTile(
                          title: const Text('User Profile'),
-                         selected: _selectedIndex == 7,
+                         selected: _selectedIndex == 12,
                          selectedTileColor:
                              Colors.indigo.withOpacity(0.08),
-                         onTap: () => _onItemTapped(7),
+                         onTap: () => _onItemTapped(12),
                        ),
                         ListTile(
                           title: const Text('Emergency Information'),
@@ -343,18 +373,16 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
                ),
              ),
 
-
-             const Divider(height: 1),
-
+             const Divider(height: 1), // Separator line above the logout button
 
              // Bottom Logout
              ListTile(
                leading: const Icon(Icons.logout),
                title: const Text('Logout'),
-               onTap: () {
-                 Navigator.pop(context);
-                 ScaffoldMessenger.of(context).showSnackBar(
-                   const SnackBar(content: Text('Logged out (demo).')),
+               onTap: () { // When tapped
+                 Navigator.pop(context); // Close the drawer first
+                 ScaffoldMessenger.of(context).showSnackBar( // Then show a brief message at the bottom. (ScaffoldMessenger = a widget that displays snack bars & showSnackBar() = shows a snack bar)
+                   const SnackBar(content: Text('Logged out successfully.')), // SnackBar = a small popup message at the bottom of the screen
                  );
                },
              ),
@@ -365,3 +393,43 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
    );
   }
 }
+
+/*
+───────────────────────────────────────────────
+Drawer Expansion Behavior (Logic Summary)
+───────────────────────────────────────────────
+1. When the app starts:
+   - _selectedIndex = 0 (default → "Home").
+   - All ExpansionTiles (main panels) are collapsed because 
+     none of their index groups contain 0.
+
+2. When you tap a main panel (like "Academics" or "User Options"):
+   - _selectedIndex does NOT change.
+   - The panel simply expands or collapses visually.
+   - This behavior is built into Flutter’s ExpansionTile widget
+     — no custom logic needed.
+
+3. When you tap a sub-panel (like "Grades"):
+   - _onItemTapped(index) runs.
+   - It updates _selectedIndex to that sub-panel’s index (e.g. 8).
+   - It closes the drawer (Navigator.pop(context)).
+   - The main screen updates to show the selected page.
+
+4. When you reopen the drawer:
+   - Each main panel checks:
+       initiallyExpanded: _panelHasSelection(itsGroup)
+   - If _selectedIndex belongs to that panel’s group of indices,
+     _panelHasSelection() returns true, so that panel starts expanded.
+   - Example:
+       _selectedIndex = 8 → "Grades"
+       academicsGroup = [6,7,8,9,10,11]
+       → "Academics" panel starts open.
+
+5. Result:
+   - Clicking main panel = just expand/collapse (UI only).
+   - Clicking sub-item = updates state & decides which panel
+     opens next time.
+   - Drawer always reopens showing the section that contains
+     the currently selected sub-item.
+───────────────────────────────────────────────
+*/
