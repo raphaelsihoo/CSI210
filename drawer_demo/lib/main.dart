@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget { // MyApp is a stateless widget meaning it 
       title: appTitle,
       theme: ThemeData(
         colorSchemeSeed: Colors.indigo,
-        useMaterial3: true,
+        useMaterial3: true, // use the latest Material Design version (Material You)
       ),
       home: const MyHomePage(title: appTitle), // MyHomePage is the home screen of the app (home is the default route of the app) and it is stateful (can change)
     );
