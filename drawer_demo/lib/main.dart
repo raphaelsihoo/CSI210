@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
     fontWeight: FontWeight.bold,
   ); 
 
-  static const List<Widget> _widgetOptions = <Widget>[ // This is a list of screens - each one is a simple Text widget. So, depending on _selectedIndex, one of these three lines of text will appear on screen.
+  static const List<Widget> _widgetOptions = <Widget>[ // This is a list of screens - each one is a simple Text widget. So, depending on _selectedIndex, one of these 16 lines of text will appear on screen.
     Text('Welcome Home', style: optionStyle), // index 0
     Text('Student Finance', style: optionStyle), // 1
     Text('Financial Aid', style: optionStyle), // 2
@@ -90,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
   ]; // Matching titles for each screen to show in the app bar
   // AppBar (below) will show one of these titles based on the selected index. (ex. _titles[0] shows "Home")
   
-  void _onItemTapped(int index) { // When you tap a drawer item ("Home," "Business," etc.), this function runs.
+  void _onItemTapped(int index) { // When you tap a drawer item ("Home," "Student Finance," etc.), this function runs.
     setState(() {
       _selectedIndex = index;
     });
@@ -144,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> { // Here is the changing-stuff
      */
 
      // Body still uses your original _widgetOptions[_selectedIndex]
-     body: Center(child: _widgetOptions[_selectedIndex]), // This is what you see on the main screen. It shows one of the three texts ("Home," "Business," or "School") based on the selected index.
+     body: Center(child: _widgetOptions[_selectedIndex]), // This is what you see on the main screen. It shows one of the 16 texts ("Welcome Home,"Student Finance"," and etc) based on the selected index.
      // Center = This just makes sure the text is in the middle of the screen.
 
      // Technically, the layout of drawer starts from here
