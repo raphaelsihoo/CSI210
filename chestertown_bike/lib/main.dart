@@ -20,9 +20,9 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  GoogleMapController? _controller;
+  GoogleMapController? _controller; // Controller: Manages the Google Map instance, which means it handles user interactions and map updates.
 
-  static const LatLng _chestertown = LatLng(39.2090, -76.0660);
+  static const LatLng _chestertown = LatLng(39.2090, -76.0660); // LatLng: Represents a geographical point with latitude and longitude coordinates.
 
   @override
   Widget build(BuildContext context) {
