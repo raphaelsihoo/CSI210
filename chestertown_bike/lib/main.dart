@@ -8,7 +8,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Chestertown Bike Map',
       routes: {
         // routes: Defines the available routes in the application, mapping route names to their corresponding widget builders. home: The initial screen displayed when the app starts.
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         '/saved': (_) =>
             const SavedRoutesScreen(), // placeholder for now. placeholder: A temporary or dummy implementation used for testing or demonstration purposes.
       },
-      initialRoutes: '/',
+      initialRoute: '/',
     );
   }
 }
