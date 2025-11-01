@@ -74,7 +74,7 @@ class _MapScreenState extends State<MapScreen> {
 
   int _nextMarkerId = 0;
 
-  void _saveCurrentRouteDraft() {
+  void _saveCurrentRouteDraft() async {
     if (_points.length < 2) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -84,23 +84,34 @@ class _MapScreenState extends State<MapScreen> {
       return;
     }
 
-    final route = SavedRoute(
-      id: DateTime.now().millisecondsSinceEpoch.toString(), // unique-ish id
-      title: 'Untitled Route', // placeholder; I'll fill this via a Form later
-      note: 'No notes yet', // placeholder
-      points: List<LatLng>.from(_points), // copy of your ordered points
-      createdAt: DateTime.now(),
-    );
-
-    // For now: just confirm it works
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Draft route created with ${route.points.length} points'),
+    // Navigate to the details form, pass the current points
+    final route = await Navigator.push<SavedRoute>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => RouteDetailsScreen(points: List<LatLng>.from(_points)),
       ),
     );
 
-    // (Next step will be: Navigator.push to a “Details” screen with this `route`
-    // and then persist it using shared_preferences or hive.)
+    if (route != null) {
+      // For now, just confirm we got a route back
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Saved "${route.title}" with ${route.points.length} points',
+          ),
+        ),
+      );
+
+      // Optional: clear current drawing after save
+      setState(() {
+        _markers.clear();
+        _points.clear();
+        _polylines.clear();
+      });
+
+      // NEXT: you’ll store `route` somewhere (in-memory list or shared_preferences),
+      // and show it on the Saved Routes screen.
+    }
   }
 
   @override
