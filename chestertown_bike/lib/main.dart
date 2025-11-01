@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'data/models.dart';
 import 'screens/route_details.dart';
+import 'data/repository.dart';
 
 void main() => runApp(const MyApp());
 
@@ -85,14 +86,18 @@ class _MapScreenState extends State<MapScreen> {
     }
 
     // Navigate to the details form, pass the current points
+    // this will return a SavedRoute object when done
     final route = await Navigator.push<SavedRoute>(
+      // await: Waits for the result of the navigation operation, which will be a SavedRoute object when the user completes the form.
       context,
       MaterialPageRoute(
+        // MaterialPageRoute: A widget that creates a route that transitions to a new screen using a platform-specific animation.
         builder: (_) => RouteDetailsScreen(points: List<LatLng>.from(_points)),
       ),
     );
 
     if (route != null) {
+      // route != null: Checks if a route was returned from the details screen, indicating that the user completed the form and saved the route.
       // For now, just confirm we got a route back
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -102,7 +107,7 @@ class _MapScreenState extends State<MapScreen> {
         ),
       );
 
-      // Optional: clear current drawing after save
+      // clear current drawing after save
       setState(() {
         _markers.clear();
         _points.clear();
@@ -112,6 +117,12 @@ class _MapScreenState extends State<MapScreen> {
       // NEXT: you’ll store `route` somewhere (in-memory list or shared_preferences),
       // and show it on the Saved Routes screen.
     }
+  }
+
+  @override // Overrides the dispose method to clean up resources when the widget is removed from the widget tree.
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
   }
 
   @override
@@ -160,7 +171,9 @@ class _MapScreenState extends State<MapScreen> {
             onTap: (latLng) {
               setState(() {
                 _points.add(latLng); // ordered list (for saving)
-                final id = MarkerId('${_nextMarkerId++}');
+                final id = MarkerId(
+                  '${_nextMarkerId++}',
+                ); // this is needed to give each marker a unique id
                 _markers.add(Marker(markerId: id, position: latLng));
                 _refreshPolyline();
               });
