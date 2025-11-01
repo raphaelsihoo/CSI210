@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         '/saved': (_) =>
             const SavedRoutesScreen(), // placeholder for now. placeholder: A temporary or dummy implementation used for testing or demonstration purposes.
       },
-      initialRoute: '/', 
+      initialRoute: '/',
     );
   }
 }
@@ -86,21 +86,50 @@ class _MapScreenState extends State<MapScreen> {
         ),
       ),
 
-      body: GoogleMap(
-        initialCameraPosition: const CameraPosition(
-          target: _chestertown,
-          zoom: 15,
-        ),
-        onMapCreated: (controller) {
-          _controller = controller;
-        },
-        onTap: (latLng) {
-          setState(() {
-            final id = MarkerId('${_markers.length + 1}');
-            _markers.add(Marker(markerId: id, position: latLng));
-          });
-        },
-        markers: _markers,
+      body: Stack(
+        // Stack: A layout widget that allows overlapping of child widgets, useful for layering the map and other UI elements.
+        children: [
+          GoogleMap(
+            initialCameraPosition: const CameraPosition(
+              target: _chestertown,
+              zoom: 15,
+            ),
+            onMapCreated: (controller) {
+              _controller = controller;
+            },
+            onTap: (latLng) {
+              setState(() {
+                final id = MarkerId('${_markers.length + 1}');
+                _markers.add(Marker(markerId: id, position: latLng));
+              });
+            },
+            markers: _markers,
+          ),
+          Positioned(
+            right: 16,
+            top: 16,
+            child: Column(
+              children: [
+                FloatingActionButton.small(
+                  heroTag: 'clear',
+                  onPressed: () => setState(() => _markers.clear()),
+                  child: const Icon(Icons.clear),
+                ),
+                const SizedBox(height: 12),
+                FloatingActionButton.small(
+                  heroTag: 'save',
+                  onPressed: () {
+                    // next step: navigate to details form with current points
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Save coming soon..')),
+                    );
+                  },
+                  child: const Icon(Icons.save),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
