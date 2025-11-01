@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'data/models.dart';
+import 'screens/route_details.dart';
 
 void main() => runApp(const MyApp());
 
