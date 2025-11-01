@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         '/saved': (_) =>
             const SavedRoutesScreen(), // placeholder for now. placeholder: A temporary or dummy implementation used for testing or demonstration purposes.
       },
-      initialRoute: '/',
+      initialRoute: '/', 
     );
   }
 }
@@ -50,6 +50,9 @@ class _MapScreenState extends State<MapScreen> {
     39.2090,
     -76.0660,
   ); // LatLng: Represents a geographical point with latitude and longitude coordinates.
+
+  Set<Marker> _markers =
+      {}; // this stores all markers you add by tapping the map
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +94,13 @@ class _MapScreenState extends State<MapScreen> {
         onMapCreated: (controller) {
           _controller = controller;
         },
+        onTap: (latLng) {
+          setState(() {
+            final id = MarkerId('${_markers.length + 1}');
+            _markers.add(Marker(markerId: id, position: latLng));
+          });
+        },
+        markers: _markers,
       ),
     );
   }
