@@ -55,6 +55,9 @@ class _MapScreenState extends State<MapScreen> {
   Set<Marker> _markers =
       {}; // this stores all markers you add by tapping the map
 
+  final List<LatLng> _points =
+      []; // this is to keep an ordered path (added in addition to Set<Marker>)
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,6 +103,7 @@ class _MapScreenState extends State<MapScreen> {
             },
             onTap: (latLng) {
               setState(() {
+                _points.add(latLng); // ordered list (for saving)
                 final id = MarkerId('${_markers.length + 1}');
                 _markers.add(Marker(markerId: id, position: latLng));
               });
