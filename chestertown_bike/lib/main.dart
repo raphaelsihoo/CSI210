@@ -53,10 +53,54 @@ class _MapScreenState extends State<MapScreen> {
   ); // LatLng: Represents a geographical point with latitude and longitude coordinates.
 
   Set<Marker> _markers =
-      {}; // this stores all markers you add by tapping the map
-
+      <Marker>{}; // this stores all markers you add by tapping the map
   final List<LatLng> _points =
-      []; // this is to keep an ordered path (added in addition to Set<Marker>)
+      <
+        LatLng
+      >[]; // this is to keep an ordered path (added in addition to Set<Marker>)
+  Set<Polyline> _polylines = <Polyline>{};
+
+  void _refreshPolyline() {
+    _polylines = {
+      Polyline(
+        polylineId: const PolylineId('route'),
+        width: 4,
+        color: Colors.indigo,
+        points: List<LatLng>.from(_points),
+      ),
+    };
+  }
+
+  int _nextMarkerId = 0;
+
+  void _saveCurrentRouteDraft() {
+    if (_points.length < 2) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Add at least two points to form a route.'),
+        ),
+      );
+      return;
+    }
+
+    final route = SavedRoute(
+      id: DateTime.now().millisecondsSinceEpoch.toString(), // unique-ish id
+      title: 'Untitled Route', // placeholder; I'll fill this via a Form later
+      note: 'No notes yet', // placeholder
+      points: List<LatLng>.from(_points), // copy of your ordered points
+      createdAt: DateTime.now(),
+    );
+
+    // For now: just confirm it works
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Draft route created with ${route.points.length} points'),
+      ),
+    );
+
+    // (Next step will be: Navigator.push to a “Details” screen with this `route`
+    // and then persist it using shared_preferences or hive.)
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,11 +148,13 @@ class _MapScreenState extends State<MapScreen> {
             onTap: (latLng) {
               setState(() {
                 _points.add(latLng); // ordered list (for saving)
-                final id = MarkerId('${_markers.length + 1}');
+                final id = MarkerId('${_nextMarkerId++}');
                 _markers.add(Marker(markerId: id, position: latLng));
+                _refreshPolyline();
               });
             },
             markers: _markers,
+            polylines: _polylines,
           ),
           Positioned(
             right: 16,
@@ -117,18 +163,17 @@ class _MapScreenState extends State<MapScreen> {
               children: [
                 FloatingActionButton.small(
                   heroTag: 'clear',
-                  onPressed: () => setState(() => _markers.clear()),
+                  onPressed: () => setState(() {
+                    _markers.clear();
+                    _points.clear();
+                    _polylines.clear();
+                  }),
                   child: const Icon(Icons.clear),
                 ),
                 const SizedBox(height: 12),
                 FloatingActionButton.small(
                   heroTag: 'save',
-                  onPressed: () {
-                    // next step: navigate to details form with current points
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Save coming soon..')),
-                    );
-                  },
+                  onPressed: _saveCurrentRouteDraft,
                   child: const Icon(Icons.save),
                 ),
               ],
