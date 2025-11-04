@@ -41,7 +41,7 @@ class _RouteDetailsScreenState extends State<RouteDetailsScreen> {
       appBar: AppBar(title: const Text('Route Details')),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Form(
+        child: Form( // Form: A widget that groups multiple form fields and manages their validation and submission.
           key: _formKey,
           child: Column(
             children: [

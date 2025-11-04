@@ -24,15 +24,31 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// The following is a placeholder screen for saved routes.
 class SavedRoutesScreen extends StatelessWidget {
   const SavedRoutesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final routes = RouteRepository.i.all; // read from repository
+
     return Scaffold(
       appBar: AppBar(title: const Text('Saved Routes')),
-      body: const Center(child: Text('No routes yet')),
+      body: routes.isEmpty
+          ? const Center(child: Text('No saved routes yet'))
+          : ListView.separated(
+              // ListView.separated: A scrollable list of widgets separated by divider widgets, useful for displaying lists with visual separation between items.
+              itemCount: routes.length,
+              separatorBuilder: (_, __) => const Divider(height: 1),
+              itemBuilder: (context, index) {
+                final r = routes[index];
+                return ListTile(
+                  title: Text(r.title),
+                  subtitle: Text(
+                    '${r.points.length} points • ${r.createdAt.toLocal().toString().split(".").first}',
+                  ),
+                );
+              },
+            ),
     );
   }
 }
@@ -55,7 +71,9 @@ class _MapScreenState extends State<MapScreen> {
   ); // LatLng: Represents a geographical point with latitude and longitude coordinates.
 
   Set<Marker> _markers =
-      <Marker>{}; // this stores all markers you add by tapping the map
+      <
+        Marker
+      >{}; // this stores all markers you add by tapping the map. {} means a Set literal
   final List<LatLng> _points =
       <
         LatLng
@@ -68,7 +86,9 @@ class _MapScreenState extends State<MapScreen> {
         polylineId: const PolylineId('route'),
         width: 4,
         color: Colors.indigo,
-        points: List<LatLng>.from(_points),
+        points: List<LatLng>.from(
+          _points,
+        ), // ordered list of points from _points
       ),
     };
   }
@@ -97,26 +117,43 @@ class _MapScreenState extends State<MapScreen> {
     );
 
     if (route != null) {
-      // route != null: Checks if a route was returned from the details screen, indicating that the user completed the form and saved the route.
-      // For now, just confirm we got a route back
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Saved "${route.title}" with ${route.points.length} points',
-          ),
-        ),
-      );
+      // if the user submitted the form (did not cancel) form: The user interface that collects input from the user, in this case, the route details.
+      // 1) store it
+      RouteRepository.i.add(route);
 
-      // clear current drawing after save
+      // 2) feedback
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Saved "${route.title}"')));
+
+      // 3) clear drawing
       setState(() {
         _markers.clear();
         _points.clear();
         _polylines.clear();
       });
 
+      // 4) go to Saved Routes screen
+      Navigator.pushNamed(context, '/saved');
+
       // NEXT: you’ll store `route` somewhere (in-memory list or shared_preferences),
       // and show it on the Saved Routes screen.
     }
+  }
+
+  // _undoLastPoint: Removes the last point added to the route and updates the map accordingly.
+  void _undoLastPoint() {
+    if (_points.isEmpty) return;
+    setState(() {
+      _points.removeLast();
+      // also remove last marker (we gave markers ids 0,1,2,… in order)
+      if (_nextMarkerId > 0) {
+        _nextMarkerId--;
+        final idToRemove = MarkerId('$_nextMarkerId');
+        _markers.removeWhere((m) => m.markerId == idToRemove);
+      }
+      _refreshPolyline();
+    });
   }
 
   @override // Overrides the dispose method to clean up resources when the widget is removed from the widget tree.
@@ -142,6 +179,7 @@ class _MapScreenState extends State<MapScreen> {
                 leading: const Icon(Icons.map),
                 title: const Text('Home (Map)'),
                 onTap: () => Navigator.pushNamedAndRemoveUntil(
+                  // pushNamedAndRemoveUntil: Navigates to the specified route and removes all previous routes until the specified condition is met.
                   context,
                   '/',
                   (r) => false,
@@ -150,7 +188,10 @@ class _MapScreenState extends State<MapScreen> {
               ListTile(
                 leading: const Icon(Icons.save),
                 title: const Text('Saved Routes'),
-                onTap: () => Navigator.pushNamed(context, '/saved'),
+                onTap: () => Navigator.pushNamed(
+                  context,
+                  '/saved',
+                ), // pushNamed: Navigates to the specified route without removing any previous routes.
               ),
             ],
           ),
@@ -195,6 +236,14 @@ class _MapScreenState extends State<MapScreen> {
                   }),
                   child: const Icon(Icons.clear),
                 ),
+
+                const SizedBox(height: 12),
+                FloatingActionButton.small(
+                  heroTag: 'undo',
+                  onPressed: _undoLastPoint,
+                  child: const Icon(Icons.undo),
+                ),
+
                 const SizedBox(height: 12),
                 FloatingActionButton.small(
                   heroTag: 'save',
