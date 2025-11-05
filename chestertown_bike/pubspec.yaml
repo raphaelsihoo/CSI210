@@ -37,6 +37,7 @@ dependencies:
   # The following is needed for Google Maps Flutter plugin, which means it handles user interactions and map updates. plugin means a software component that adds a specific feature to an existing computer program.
   google_maps_flutter: ^2.6.0 # Google Maps Flutter plugin for integrating Google Maps into Flutter apps.
   google_maps_flutter_web: ^0.5.6 # Web implementation of the Google Maps Flutter plugin, enabling Google Maps functionality in Flutter web applications.
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:

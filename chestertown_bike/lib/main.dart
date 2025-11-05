@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'data/models.dart';
 import 'screens/route_details.dart';
 import 'data/repository.dart';
+import 'screens/route_view.dart';
 
 void main() => runApp(const MyApp());
 
@@ -37,7 +38,7 @@ class SavedRoutesScreen extends StatelessWidget {
           ? const Center(child: Text('No saved routes yet'))
           : ListView.separated(
               // ListView.separated: A scrollable list of widgets separated by divider widgets, useful for displaying lists with visual separation between items.
-              itemCount: routes.length,
+              itemCount: routes.length, // routes = a list of SavedRoute
               separatorBuilder: (_, __) => const Divider(height: 1),
               itemBuilder: (context, index) {
                 final r = routes[index];
@@ -46,6 +47,14 @@ class SavedRoutesScreen extends StatelessWidget {
                   subtitle: Text(
                     '${r.points.length} points • ${r.createdAt.toLocal().toString().split(".").first}',
                   ),
+                  onTap: () { // onTap: A callback function that is triggered when the list tile is tapped, navigating to the RouteViewScreen to display the selected route.
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => RouteViewScreen(route: r),
+                      ),
+                    );
+                  },
                 );
               },
             ),
@@ -93,7 +102,7 @@ class _MapScreenState extends State<MapScreen> {
     };
   }
 
-  int _nextMarkerId = 0;
+  int _nextMarkerId = 0; // initial marker id. It is assigned when adding markers
 
   void _saveCurrentRouteDraft() async {
     if (_points.length < 2) {

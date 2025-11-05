@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../data/models.dart';
 
+
+// RouteDetailsScreen: A screen that allows users to input details for a bike route, including title and notes, and returns a SavedRoute object upon submission.
 class RouteDetailsScreen extends StatefulWidget {
   final List<LatLng> points;
   const RouteDetailsScreen({super.key, required this.points});
