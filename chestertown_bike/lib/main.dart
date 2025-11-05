@@ -4,6 +4,7 @@ import 'data/models.dart';
 import 'screens/route_details.dart';
 import 'data/repository.dart';
 import 'screens/route_view.dart';
+import 'widgets/app_drawer.dart';
 
 // When you run the program, use this command: flutter run -d chrome --web-port=5555
 // This is because shared preferences is tied to your host and port number for web apps.
@@ -68,6 +69,7 @@ class SavedRoutesScreen extends StatelessWidget {
                 );
               },
             ),
+      drawer: const AppDrawer(),
     );
   }
 }

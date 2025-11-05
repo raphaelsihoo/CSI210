@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../data/models.dart';
+import '../widgets/app_drawer.dart';
 
 // RouteViewScreen: A screen that displays a saved bike route on a Google Map, showing markers for each point and a polyline connecting them.
 class RouteViewScreen extends StatefulWidget {
@@ -60,6 +61,7 @@ class _RouteViewScreenState extends State<RouteViewScreen> {
         markers: _markers,
         polylines: _polylines,
       ),
+      drawer: const AppDrawer(),
     );
   }
 }
