@@ -6,7 +6,7 @@ import 'data/repository.dart';
 import 'screens/route_view.dart';
 
 // this main loads saved routes from local storage before starting the app
-void main() async { 
+void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // ensureInitialized(): Ensures that the Flutter framework is properly initialized before running any asynchronous code in the main function.
   await RouteRepository.i
       .loadAll(); // loadAll(): Loads all saved bike routes from local storage into the in-memory repository before the app starts.
@@ -135,8 +135,10 @@ class _MapScreenState extends State<MapScreen> {
 
     if (route != null) {
       // if the user submitted the form (did not cancel) form: The user interface that collects input from the user, in this case, the route details.
-      // 1) store it
-      RouteRepository.i.add(route);
+      // 1) store it to repository
+      await RouteRepository.i.add(
+        route,
+      ); // await is needed for async -> That is, it waits for the add operation to complete before proceeding.
 
       // 2) feedback
       ScaffoldMessenger.of(
