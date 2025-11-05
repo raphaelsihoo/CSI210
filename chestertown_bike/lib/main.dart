@@ -5,6 +5,7 @@ import 'screens/route_details.dart';
 import 'data/repository.dart';
 import 'screens/route_view.dart';
 import 'widgets/app_drawer.dart';
+import 'screens/saved_route_list.dart';
 
 // When you run the program, use this command: flutter run -d chrome --web-port=5555
 // This is because shared preferences is tied to your host and port number for web apps.
@@ -31,45 +32,6 @@ class MyApp extends StatelessWidget {
             const SavedRoutesScreen(), // placeholder for now. placeholder: A temporary or dummy implementation used for testing or demonstration purposes.
       },
       initialRoute: '/',
-    );
-  }
-}
-
-class SavedRoutesScreen extends StatelessWidget {
-  const SavedRoutesScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final routes = RouteRepository.i.all; // read from repository
-
-    return Scaffold(
-      appBar: AppBar(title: const Text('Saved Routes')),
-      body: routes.isEmpty
-          ? const Center(child: Text('No saved routes yet'))
-          : ListView.separated(
-              // ListView.separated: A scrollable list of widgets separated by divider widgets, useful for displaying lists with visual separation between items.
-              itemCount: routes.length, // routes = a list of SavedRoute
-              separatorBuilder: (_, __) => const Divider(height: 1),
-              itemBuilder: (context, index) {
-                final r = routes[index];
-                return ListTile(
-                  title: Text(r.title),
-                  subtitle: Text(
-                    '${r.points.length} points • ${r.createdAt.toLocal().toString().split(".").first}',
-                  ),
-                  onTap: () {
-                    // onTap: A callback function that is triggered when the list tile is tapped, navigating to the RouteViewScreen to display the selected route.
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => RouteViewScreen(route: r),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-      drawer: const AppDrawer(),
     );
   }
 }
@@ -194,33 +156,7 @@ class _MapScreenState extends State<MapScreen> {
         backgroundColor: Colors.indigo,
       ),
 
-      drawer: Drawer(
-        child: SafeArea(
-          child: ListView(
-            children: [
-              const DrawerHeader(child: Text('Chestertown Bike')),
-              ListTile(
-                leading: const Icon(Icons.map),
-                title: const Text('Home (Map)'),
-                onTap: () => Navigator.pushNamedAndRemoveUntil(
-                  // pushNamedAndRemoveUntil: Navigates to the specified route and removes all previous routes until the specified condition is met.
-                  context,
-                  '/',
-                  (r) => false,
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.save),
-                title: const Text('Saved Routes'),
-                onTap: () => Navigator.pushNamed(
-                  context,
-                  '/saved',
-                ), // pushNamed: Navigates to the specified route without removing any previous routes.
-              ),
-            ],
-          ),
-        ),
-      ),
+      drawer: const AppDrawer(),
 
       body: Stack(
         // Stack: A layout widget that allows overlapping of child widgets, useful for layering the map and other UI elements.
