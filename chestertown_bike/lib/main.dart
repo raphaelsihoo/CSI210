@@ -5,7 +5,13 @@ import 'screens/route_details.dart';
 import 'data/repository.dart';
 import 'screens/route_view.dart';
 
-void main() => runApp(const MyApp());
+// this main loads saved routes from local storage before starting the app
+void main() async { 
+  WidgetsFlutterBinding.ensureInitialized(); // ensureInitialized(): Ensures that the Flutter framework is properly initialized before running any asynchronous code in the main function.
+  await RouteRepository.i
+      .loadAll(); // loadAll(): Loads all saved bike routes from local storage into the in-memory repository before the app starts.
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -47,7 +53,8 @@ class SavedRoutesScreen extends StatelessWidget {
                   subtitle: Text(
                     '${r.points.length} points • ${r.createdAt.toLocal().toString().split(".").first}',
                   ),
-                  onTap: () { // onTap: A callback function that is triggered when the list tile is tapped, navigating to the RouteViewScreen to display the selected route.
+                  onTap: () {
+                    // onTap: A callback function that is triggered when the list tile is tapped, navigating to the RouteViewScreen to display the selected route.
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -102,7 +109,8 @@ class _MapScreenState extends State<MapScreen> {
     };
   }
 
-  int _nextMarkerId = 0; // initial marker id. It is assigned when adding markers
+  int _nextMarkerId =
+      0; // initial marker id. It is assigned when adding markers
 
   void _saveCurrentRouteDraft() async {
     if (_points.length < 2) {
