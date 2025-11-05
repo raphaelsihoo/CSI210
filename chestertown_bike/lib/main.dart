@@ -5,6 +5,9 @@ import 'screens/route_details.dart';
 import 'data/repository.dart';
 import 'screens/route_view.dart';
 
+// When you run the program, use this command: flutter run -d chrome --web-port=5555
+// This is because shared preferences is tied to your host and port number for web apps.
+
 // this main loads saved routes from local storage before starting the app
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // ensureInitialized(): Ensures that the Flutter framework is properly initialized before running any asynchronous code in the main function.
