@@ -6,13 +6,13 @@ import '../data/models.dart';
 // RouteDetailsScreen: A screen that allows users to input details for a bike route, including title and notes, and returns a SavedRoute object upon submission.
 class RouteDetailsScreen extends StatefulWidget {
   final List<LatLng> points;
-  const RouteDetailsScreen({super.key, required this.points});
+  const RouteDetailsScreen({super.key, required this.points}); // users pass the LatLng points they tapped on the map to the RouteDetailsScreen
 
   @override
   State<RouteDetailsScreen> createState() => _RouteDetailsScreenState();
 }
 
-class _RouteDetailsScreenState extends State<RouteDetailsScreen> {
+class _RouteDetailsScreenState extends State<RouteDetailsScreen> { // actual brain for RouteDetailsScreen
   final _formKey = GlobalKey<FormState>();
   final _titleCtrl = TextEditingController();
   final _noteCtrl = TextEditingController();
@@ -24,7 +24,8 @@ class _RouteDetailsScreenState extends State<RouteDetailsScreen> {
     super.dispose();
   }
 
-  void _submit() {
+  // This is called when user taps 'Save' button
+  void _submit() { // sumit() calles SavedRoute and returns to caller
     if (_formKey.currentState!.validate()) {
       final route = SavedRoute(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -33,7 +34,7 @@ class _RouteDetailsScreenState extends State<RouteDetailsScreen> {
         points: List<LatLng>.from(widget.points),
         createdAt: DateTime.now(),
       );
-      Navigator.pop(context, route); // return to caller with the route
+      Navigator.pop(context, route); // return to caller with the route (going back to MapScreen with the new route data)
     }
   }
 
@@ -48,21 +49,21 @@ class _RouteDetailsScreenState extends State<RouteDetailsScreen> {
           child: Column(
             children: [
               TextFormField(
-                controller: _titleCtrl,
+                controller: _titleCtrl, // _titleCtrl: Controller for the title input field.
                 decoration: const InputDecoration(labelText: 'Title'),
                 validator: (v) =>
-                    (v == null || v.trim().isEmpty) ? 'Enter a title' : null,
+                    (v == null || v.trim().isEmpty) ? 'Enter a title' : null, // validator: A function that checks if the title input is valid, returning an error message if it's empty.
               ),
               const SizedBox(height: 12),
               TextFormField(
-                controller: _noteCtrl,
+                controller: _noteCtrl, // _noteCtrl: Controller for the notes input field.
                 decoration: const InputDecoration(
                   labelText: 'Notes (optional)',
                 ),
-                maxLines: 3,
+                maxLines: 3, // allow multiple lines for notes
               ),
               const SizedBox(height: 20),
-              ElevatedButton(onPressed: _submit, child: const Text('Save')),
+              ElevatedButton(onPressed: _submit, child: const Text('Save')), // When user taps 'Save', _submit() is called to validate and return the route.
             ],
           ),
         ),

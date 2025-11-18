@@ -96,10 +96,11 @@ class _MapScreenState extends State<MapScreen> {
       context,
       MaterialPageRoute(
         // MaterialPageRoute: A widget that creates a route that transitions to a new screen using a platform-specific animation.
-        builder: (_) => RouteDetailsScreen(points: List<LatLng>.from(_points)),
+        builder: (_) => RouteDetailsScreen(points: List<LatLng>.from(_points)), // builder: A function that builds the RouteDetailsScreen widget, passing the current list of LatLng points to it. and user inputs title and notes there.
       ),
     );
 
+    // After the user submits the form, `route` will be non-null
     if (route != null) {
       // if the user submitted the form (did not cancel) form: The user interface that collects input from the user, in this case, the route details.
       // 1) store it to repository
@@ -170,7 +171,7 @@ class _MapScreenState extends State<MapScreen> {
               _controller = controller;
             },
             onTap: (latLng) {
-              setState(() {
+              setState(() { // when the map is tapped, update the state to add a new marker and point || setState(): A method that notifies the framework that the internal state of the widget has changed, prompting a rebuild of the UI.
                 _points.add(latLng); // ordered list (for saving)
                 final id = MarkerId(
                   '${_nextMarkerId++}',
@@ -207,7 +208,7 @@ class _MapScreenState extends State<MapScreen> {
                 const SizedBox(height: 12),
                 FloatingActionButton.small(
                   heroTag: 'save',
-                  onPressed: _saveCurrentRouteDraft,
+                  onPressed: _saveCurrentRouteDraft, // when tapped, it calls _saveCurrentRouteDraft() to save the current route draft.
                   child: const Icon(Icons.save),
                 ),
               ],

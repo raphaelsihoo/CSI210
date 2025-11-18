@@ -20,7 +20,7 @@ class SavedRoutesScreen extends StatelessWidget {
               itemCount: routes.length, // routes = a list of SavedRoute
               separatorBuilder: (_, __) => const Divider(height: 1),
               itemBuilder: (context, index) {
-                final r = routes[index];
+                final r = routes[index]; // r: The SavedRoute object at the current index in the list of saved routes.
                 return ListTile(
                   title: Text(r.title),
                   subtitle: Text(
