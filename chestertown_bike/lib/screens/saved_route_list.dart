@@ -54,7 +54,19 @@ class SavedRoutesScreen extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.map, size: 40, color: Colors.indigo),
+                        if (r.imageBytes != null)
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.memory(
+                              r.imageBytes!,
+                              height: 80,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        else
+                          Icon(Icons.map, size: 40, color: Colors.indigo),
+                          
                         const SizedBox(height: 10),
                         Text(
                           r.title,

@@ -34,7 +34,11 @@ class RouteRepository {
   Future<void> saveAll() async {
     // saveAll(): A method that serializes the current list of bike routes and saves them to local storage for persistent storage.
     final prefs = await SharedPreferences.getInstance();
-    final jsonList = _routes.map((r) => r.toJson()).toList(); // r.toJson() from models.dart / r = one SavedRoute object (map: <String, dynamic> like a dictionary  in Python)
+    final jsonList = _routes.map((r) {
+      final map = r.toJson();
+      map['imageBytes'] = r.imageBytes != null ? base64Encode(r.imageBytes!) : null;
+      return map;
+    }).toList();
     await prefs.setString('routes', jsonEncode(jsonList)); // pair key 'routes' with the serialized JSON string of routes, which is jsonEncode(jsonList). *jsonList is converted to JSON string using jsonEncode().
   }
 

@@ -1,5 +1,6 @@
 // lib/data/models.dart
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 // Represents one saved bike route.
@@ -10,6 +11,8 @@ class SavedRoute {
   final List<LatLng> points; // ordered points the user tapped
   final DateTime createdAt; // when it was created
   final String routeType;
+  final String? imagePath;
+  Uint8List? imageBytes;
 
   SavedRoute({
     required this.id,
@@ -18,6 +21,8 @@ class SavedRoute {
     required this.points,
     required this.createdAt,
     required this.routeType,
+    this.imagePath,
+    this.imageBytes,
   }); // constructor
 
   // Convert SavedRoute to a Map for serialization. (to save)
@@ -32,6 +37,8 @@ class SavedRoute {
         .map((p) => {'lat': p.latitude, 'lng': p.longitude})
         .toList(),
     'routeType': routeType,
+    'imagePath': imagePath,
+    'imageBytes': imageBytes != null ? base64Encode(imageBytes!) : null,
   };
 
   // Recreate object from saved Map. (to load)
@@ -56,6 +63,10 @@ class SavedRoute {
       points: pts,
       createdAt: DateTime.parse(json['createdAt']),
       routeType: json['routeType'] ?? 'unknown',
+      imagePath: json['imagePath'],
+      imageBytes: json['imageBytes'] != null
+        ? base64Decode(json['imageBytes'])
+        : null,
     );
   }
 }

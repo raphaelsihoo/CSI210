@@ -55,11 +55,26 @@ class _RouteViewScreenState extends State<RouteViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.route.title)),
-      body: GoogleMap(
-        initialCameraPosition: _initialCamera(),
-        onMapCreated: (c) => _controller = c,
-        markers: _markers,
-        polylines: _polylines,
+      body: Column(
+        children: [
+          if (widget.route.imageBytes != null)
+            Container(
+              height: 200,
+              width: double.infinity,
+              child: Image.memory(
+                widget.route.imageBytes!,
+                fit: BoxFit.cover,
+              ),
+            ),
+          Expanded(
+            child: GoogleMap(
+              initialCameraPosition: _initialCamera(),
+              onMapCreated: (c) => _controller = c,
+              markers: _markers,
+              polylines: _polylines,
+            ),
+          ),
+        ],
       ),
       drawer: const AppDrawer(),
     );

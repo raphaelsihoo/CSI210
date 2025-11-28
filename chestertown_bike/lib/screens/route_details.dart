@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../data/models.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:typed_data'; // for web image bytes
 
 // RouteDetailsScreen: A screen that allows users to input details for a bike route, including title and notes, and returns a SavedRoute object upon submission.
 class RouteDetailsScreen extends StatefulWidget {
@@ -20,6 +22,8 @@ class _RouteDetailsScreenState extends State<RouteDetailsScreen> {
   final _titleCtrl = TextEditingController();
   final _noteCtrl = TextEditingController();
   String _routeType = ''; // default
+  Uint8List? _imageBytes; // image data for preview & saving
+  String? _imageName; // store file name for persistence
 
   @override
   void dispose() {
@@ -39,11 +43,28 @@ class _RouteDetailsScreenState extends State<RouteDetailsScreen> {
         points: List<LatLng>.from(widget.points),
         createdAt: DateTime.now(),
         routeType: _routeType,
+        imagePath: _imageName,
+        imageBytes: _imageBytes,
       );
       Navigator.pop(
         context,
         route,
       ); // return to caller with the route (going back to MapScreen with the new route data)
+    }
+  }
+
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+
+    final XFile? file = await picker.pickImage(source: ImageSource.gallery);
+
+    if (file != null) {
+      final bytes = await file.readAsBytes();
+
+      setState(() {
+        _imageBytes = bytes;
+        _imageName = file.name;
+      });
     }
   }
 
@@ -112,6 +133,33 @@ class _RouteDetailsScreenState extends State<RouteDetailsScreen> {
                     _routeType = value!;
                   });
                 },
+              ),
+
+              const SizedBox(height: 20),
+              Text(
+                "Add an Image:",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+
+              const SizedBox(height: 10),
+              if (_imageBytes != null)
+                Container(
+                  height: 150,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.blueGrey),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadiusGeometry.circular(12),
+                    child: Image.memory(_imageBytes!, fit: BoxFit.cover),
+                  ),
+                ),
+
+              TextButton.icon(
+                onPressed: _pickImage,
+                icon: const Icon(Icons.photo),
+                label: const Text("Choose Image"),
               ),
 
               ElevatedButton(
