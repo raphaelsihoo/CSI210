@@ -26,16 +26,15 @@ class RouteRepository {
     if (raw == null) return; // nothing saved yet
 
     final list = jsonDecode(raw) as List; // jsonDecode(): A function that decodes a JSON-encoded string into a Dart object, typically used for deserializing data retrieved from storage.
-    _routes
-      ..clear() // clear existing list. The reason why we clear first is to avoid duplicates when loading multiple times.
-      ..addAll(list.map((r) => SavedRoute.fromJson(r as Map<String, dynamic>)));
+    _routes.clear(); // clear existing list. The reason why we clear first is to avoid duplicates when loading multiple times.
+    _routes.addAll(list.map((r) => SavedRoute.fromJson(r as Map<String, dynamic>)));
   }
 
   // Save current list/data(routes) to local storage
   Future<void> saveAll() async {
     // saveAll(): A method that serializes the current list of bike routes and saves them to local storage for persistent storage.
     final prefs = await SharedPreferences.getInstance();
-    final jsonList = _routes.map((r) => r.toJson()).toList(); // r.toJson() from models.dart
+    final jsonList = _routes.map((r) => r.toJson()).toList(); // r.toJson() from models.dart / r = one SavedRoute object (map: <String, dynamic> like a dictionary  in Python)
     await prefs.setString('routes', jsonEncode(jsonList)); // pair key 'routes' with the serialized JSON string of routes, which is jsonEncode(jsonList). *jsonList is converted to JSON string using jsonEncode().
   }
 

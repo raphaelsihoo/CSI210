@@ -25,6 +25,30 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Chestertown Bike Map',
+      theme: ThemeData(
+        primarySwatch: Colors.cyan,
+
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.amber,
+          foregroundColor: Colors.white,
+          elevation: 4,
+          centerTitle: true,
+        ),
+
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Colors.amber,
+          foregroundColor: Colors.white,
+        ),
+
+        textTheme: const TextTheme(
+          titleLarge: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.cyan,
+          ),
+          bodyMedium: TextStyle(fontSize: 16),
+        ),
+      ),
       routes: {
         // routes: Defines the available routes in the application, mapping route names to their corresponding widget builders. home: The initial screen displayed when the app starts.
         '/': (_) => const MapScreen(),
@@ -65,6 +89,7 @@ class _MapScreenState extends State<MapScreen> {
 
   void _refreshPolyline() {
     _polylines = {
+      // Polyline(): Represents a series of connected line segments on the map, used to visualize routes or paths.
       Polyline(
         polylineId: const PolylineId('route'),
         width: 4,
@@ -96,7 +121,9 @@ class _MapScreenState extends State<MapScreen> {
       context,
       MaterialPageRoute(
         // MaterialPageRoute: A widget that creates a route that transitions to a new screen using a platform-specific animation.
-        builder: (_) => RouteDetailsScreen(points: List<LatLng>.from(_points)), // builder: A function that builds the RouteDetailsScreen widget, passing the current list of LatLng points to it. and user inputs title and notes there.
+        builder: (_) => RouteDetailsScreen(
+          points: List<LatLng>.from(_points),
+        ), // builder: A function that builds the RouteDetailsScreen widget, passing the current list of LatLng points to it. and user inputs title and notes there.
       ),
     );
 
@@ -171,7 +198,8 @@ class _MapScreenState extends State<MapScreen> {
               _controller = controller;
             },
             onTap: (latLng) {
-              setState(() { // when the map is tapped, update the state to add a new marker and point || setState(): A method that notifies the framework that the internal state of the widget has changed, prompting a rebuild of the UI.
+              setState(() {
+                // when the map is tapped, update the state to add a new marker and point || setState(): A method that notifies the framework that the internal state of the widget has changed, prompting a rebuild of the UI.
                 _points.add(latLng); // ordered list (for saving)
                 final id = MarkerId(
                   '${_nextMarkerId++}',
@@ -208,7 +236,8 @@ class _MapScreenState extends State<MapScreen> {
                 const SizedBox(height: 12),
                 FloatingActionButton.small(
                   heroTag: 'save',
-                  onPressed: _saveCurrentRouteDraft, // when tapped, it calls _saveCurrentRouteDraft() to save the current route draft.
+                  onPressed:
+                      _saveCurrentRouteDraft, // when tapped, it calls _saveCurrentRouteDraft() to save the current route draft.
                   child: const Icon(Icons.save),
                 ),
               ],
