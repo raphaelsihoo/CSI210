@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.cyan,
 
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.amber,
+          backgroundColor: Color.fromARGB(255, 151, 214, 26),
           foregroundColor: Colors.white,
           elevation: 4,
           centerTitle: true,

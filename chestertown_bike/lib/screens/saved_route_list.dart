@@ -15,19 +15,20 @@ class SavedRoutesScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Saved Routes')),
       body: routes.isEmpty
           ? const Center(child: Text('No saved routes yet'))
-          : ListView.separated(
-              // ListView.separated: A scrollable list of widgets separated by divider widgets, useful for displaying lists with visual separation between items.
-              itemCount: routes.length, // routes = a list of SavedRoute
-              separatorBuilder: (_, __) => const Divider(height: 1),
+          : GridView.builder(
+              padding: const EdgeInsets.all(12),
+              itemCount: routes.length, // number of tiles
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount( // grid layout
+                crossAxisCount: 2, // 2 cards per row
+                crossAxisSpacing: 12, // spacing between columns
+                mainAxisSpacing: 12, // spacing between rows
+                childAspectRatio: 1.2, // shape of the tiles (1.2 = width is 1.2x height)
+              ),
               itemBuilder: (context, index) {
-                final r = routes[index]; // r: The SavedRoute object at the current index in the list of saved routes.
-                return ListTile(
-                  title: Text(r.title),
-                  subtitle: Text(
-                    '${r.points.length} points • ${r.createdAt.toLocal().toString().split(".").first}',
-                  ),
+                final r = routes[index];
+
+                return GestureDetector( // make the tile tappable
                   onTap: () {
-                    // onTap: A callback function that is triggered when the list tile is tapped, navigating to the RouteViewScreen to display the selected route.
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -35,6 +36,39 @@ class SavedRoutesScreen extends StatelessWidget {
                       ),
                     );
                   },
+                  child: Container(
+                    decoration: BoxDecoration( // tile style
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow( // shadow effect for tile
+                          color: Colors.black12,
+                          blurRadius: 6,
+                          offset: Offset(0, 3), // shadow position (x,y)
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.all(12),
+
+                    // Tile content
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.map, size: 40, color: Colors.indigo),
+                        const SizedBox(height: 10),
+                        Text(
+                          r.title,
+                          style: Theme.of(context).textTheme.titleLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "${r.points.length} points",
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                      ],
+                    ),
+                  ),
                 );
               },
             ),
