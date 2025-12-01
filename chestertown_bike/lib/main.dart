@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Chestertown Bike Map',
       theme: ThemeData(
         primarySwatch: Colors.cyan,

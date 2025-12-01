@@ -18,16 +18,19 @@ class SavedRoutesScreen extends StatelessWidget {
           : GridView.builder(
               padding: const EdgeInsets.all(12),
               itemCount: routes.length, // number of tiles
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount( // grid layout
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                // grid layout
                 crossAxisCount: 2, // 2 cards per row
                 crossAxisSpacing: 12, // spacing between columns
                 mainAxisSpacing: 12, // spacing between rows
-                childAspectRatio: 1.2, // shape of the tiles (1.2 = width is 1.2x height)
+                childAspectRatio:
+                    1.2, // shape of the tiles (1.2 = width is 1.2x height)
               ),
               itemBuilder: (context, index) {
                 final r = routes[index];
 
-                return GestureDetector( // make the tile tappable
+                return GestureDetector(
+                  // make the tile tappable
                   onTap: () {
                     Navigator.push(
                       context,
@@ -37,11 +40,13 @@ class SavedRoutesScreen extends StatelessWidget {
                     );
                   },
                   child: Container(
-                    decoration: BoxDecoration( // tile style
+                    decoration: BoxDecoration(
+                      // tile style
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: const [
-                        BoxShadow( // shadow effect for tile
+                        BoxShadow(
+                          // shadow effect for tile
                           color: Colors.black12,
                           blurRadius: 6,
                           offset: Offset(0, 3), // shadow position (x,y)
@@ -57,16 +62,21 @@ class SavedRoutesScreen extends StatelessWidget {
                         if (r.imageBytes != null)
                           ClipRRect(
                             borderRadius: BorderRadius.circular(12),
-                            child: Image.memory(
-                              r.imageBytes!,
-                              height: 80,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
+                            child: SizedBox(
+                              width: 280,
+                              height: 280,
+                              child: AspectRatio(
+                                aspectRatio: 1,
+                                child: Image.memory(
+                                  r.imageBytes!,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
                             ),
                           )
                         else
                           Icon(Icons.map, size: 40, color: Colors.indigo),
-                          
+
                         const SizedBox(height: 10),
                         Text(
                           r.title,
